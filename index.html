@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Roblox Game Tracker</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+    header {
+      margin-bottom: 30px;
+    }
+    .game-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      display: inline-block;
+      margin-bottom: 40px;
+    }
+    .game-card img {
+      width: 120px;
+      border-radius: 10px;
+    }
+    canvas {
+      max-width: 700px;
+      margin: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>📊 Live Tracker: Steal a Brainrot</h1>
+    <p>Real-time player count and activity chart</p>
+  </header>
+
+  <div class="game-card">
+    <img src="https://tr.rbxcdn.com/9f9e1e4b9e6e6e6e6e6e6e6e6e6e6e6e/150/150/GameIcon/Png" alt="Game Icon">
+    <h2>Steal a Brainrot</h2>
+    <p id="player-count">Loading player count...</p>
+  </div>
+
+  <canvas id="playerChart"></canvas>
+
+  <script>
+    const universeId = 5377600611; // Steal a Brainrot universe ID
+    const playerData = [];
+    const timeLabels = [];
+
+    const ctx = document.getElementById('playerChart').getContext('2d');
+    const chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: timeLabels,
+        datasets: [{
+          label: 'Players Over Time',
+          data: playerData,
+          borderColor: 'rgb(54, 162, 235)',
+          backgroundColor: 'rgba(54, 162, 235, 0.2)',
+          tension: 0.3
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+
+    async function fetchPlayerCount() {
+      try {
+        const res = await fetch(`https://games.roblox.com/v1/games?universeIds=${universeId}`);
+        const data = await res.json();
+        const count = data.data[0].playing;
+        document.getElementById("player-count").textContent = `${count.toLocaleString()} players online`;
+
+        const now = new Date();
+        const time = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+        timeLabels.push(time);
+        playerData.push(count);
+        chart.update();
+      } catch (error) {
+        document.getElementById("player-count").textContent = "Failed to load player count.";
+        console.error("Error fetching data:", error);
+      }
+    }
+
+    fetchPlayerCount();
+    setInterval(fetchPlayerCount, 60000); // Update every minute
+  </script>
+
+</body>
+</html>
