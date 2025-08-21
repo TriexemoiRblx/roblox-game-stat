@@ -2,108 +2,74 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Steal a Brainrot Tracker</title>
+  <title>Steal a Brainrot Info</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    :root {
-      --bg: #f0f2f5;
-      --card: #fff;
-      --text: #333;
-    }
-    body.dark {
-      --bg: #1e1e1e;
-      --card: #2c2c2c;
-      --text: #f0f0f0;
-    }
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: var(--bg);
+      background: #f0f2f5;
       margin: 0;
       padding: 20px;
       text-align: center;
-      transition: background 0.3s;
-    }
-    .toggle {
-      margin-bottom: 20px;
     }
     .card {
-      background: var(--card);
-      color: var(--text);
+      background: white;
       border-radius: 12px;
-      padding: 16px;
+      padding: 20px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       max-width: 400px;
-      margin: 20px auto;
-      transition: background 0.3s, color 0.3s;
+      margin: auto;
     }
     .card img {
-      width: 80px;
+      width: 100px;
       border-radius: 10px;
     }
     .title {
-      font-size: 1.2em;
+      font-size: 1.4em;
       margin: 10px 0;
     }
-    .count {
+    .info {
       font-size: 1em;
       margin-top: 8px;
-    }
-    button {
-      padding: 8px 16px;
-      border: none;
-      border-radius: 8px;
-      background: #0078d4;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
+      color: #333;
     }
   </style>
 </head>
 <body>
 
-  <div class="toggle">
-    <button onclick="toggleDarkMode()">🌙 Chuyển chế độ</button>
+  <div class="card">
+    <img src="https://tr.rbxcdn.com/9f9e1e4b9e6e6e6e6e6e6e6e6e6e6e6e/150/150/GameIcon/Png" alt="Game Icon">
+    <div class="title">Steal a Brainrot</div>
+    <div class="info" id="playerCount">Đang tải số người chơi...</div>
+    <div class="info" id="favorites">Đang tải lượt yêu thích...</div>
+    <div class="info" id="visits">Đang tải lượt truy cập...</div>
   </div>
 
-  <div id="tracker"></div>
-
   <script>
-    const placeList = [
-      { id: 109983668079237, name: "Main Server" },
-      { id: 96342491571673, name: "New Player Server" },
-      { id: 109983668079238, name: "Event Server" } // Thêm placeId khác nếu có
-    ];
+    const placeId = 109983668079237;
 
-    function createCard(place, countText = "Đang tải...") {
-      return `
-        <div class="card" id="card-${place.id}">
-          <img src="https://tr.rbxcdn.com/9f9e1e4b9e6e6e6e6e6e6e6e6e6e6e6e/150/150/GameIcon/Png" alt="Game Icon">
-          <div class="title">${place.name}</div>
-          <div class="count">${countText}</div>
-        </div>
-      `;
-    }
-
-    function renderCards() {
-      const container = document.getElementById("tracker");
-      container.innerHTML = placeList.map(p => createCard(p)).join("");
-    }
-
-    async function updateCounts() {
-      const ids = placeList.map(p => p.id).join(",");
+    async function fetchGameData() {
       try {
-        const res = await fetch(`https://games.roblox.com/v1/games?placeIds=${ids}`);
+        const res = await fetch(`https://games.roblox.com/v1/games?placeIds=${placeId}`);
         const data = await res.json();
-        data.data.forEach(item => {
-          const card = document.getElementById(`card-${item.placeId}`);
-          if (card) {
-            const count = item.playing.toLocaleString();
-            card.querySelector(".count").textContent = `${count} người đang chơi`;
-          }
-        });
+        const game = data.data[0];
+
+        document.getElementById("playerCount").textContent = `👥 ${game.playing.toLocaleString()} người đang chơi`;
+        document.getElementById("favorites").textContent = `❤️ ${game.favoritedCount.toLocaleString()} lượt yêu thích`;
+        document.getElementById("visits").textContent = `👣 ${game.visits.toLocaleString()} lượt truy cập`;
       } catch (err) {
-        placeList.forEach(p => {
-          const card = document.getElementById(`card-${p.id}`);
+        document.getElementById("playerCount").textContent = "Không thể tải dữ liệu 😢";
+        document.getElementById("favorites").textContent = "";
+        document.getElementById("visits").textContent = "";
+        console.error("Lỗi khi lấy dữ liệu:", err);
+      }
+    }
+
+    fetchGameData();
+  </script>
+
+</body>
+</html>          const card = document.getElementById(`card-${p.id}`);
           if (card) {
             card.querySelector(".count").textContent = "Không thể tải dữ liệu 😢";
           }
