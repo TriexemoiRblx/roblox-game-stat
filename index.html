@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Roblox Game Tracker</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -27,10 +26,6 @@
       width: 120px;
       border-radius: 10px;
     }
-    canvas {
-      max-width: 700px;
-      margin: auto;
-    }
   </style>
 </head>
 <body>
@@ -46,56 +41,24 @@
     <p id="player-count">Loading player count...</p>
   </div>
 
-  <canvas id="playerChart"></canvas>
-
   <script>
-    const universeId = 5377600611; // Steal a Brainrot universe ID
-    const playerData = [];
-    const timeLabels = [];
-
-    const ctx = document.getElementById('playerChart').getContext('2d');
-    const chart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: timeLabels,
-        datasets: [{
-          label: 'Players Over Time',
-          data: playerData,
-          borderColor: 'rgb(54, 162, 235)',
-          backgroundColor: 'rgba(54, 162, 235, 0.2)',
-          tension: 0.3
-        }]
-      },
-      options: {
-        responsive: true,
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        }
-      }
-    });
+    const universeId = 5377600611;
 
     async function fetchPlayerCount() {
       try {
-        const res = await fetch(`https://games.roblox.com/v1/games?universeIds=${universeId}`);
+        // Gây lỗi cố tình: sai URL
+        const res = await fetch(`https://games.roblox.com/v1/games?universeId=${universeId}`); // sai key: universeId → universeIds
         const data = await res.json();
         const count = data.data[0].playing;
         document.getElementById("player-count").textContent = `${count.toLocaleString()} players online`;
-
-        const now = new Date();
-        const time = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
-        timeLabels.push(time);
-        playerData.push(count);
-        chart.update();
       } catch (error) {
-        document.getElementById("player-count").textContent = "Failed to load player count.";
-        console.error("Error fetching data:", error);
+        // Lỗi sẽ luôn xảy ra
+        document.getElementById("player-count").textContent = "⚠️ Failed to load player count.";
+        console.error("Intentional error:", error);
       }
     }
 
     fetchPlayerCount();
-    setInterval(fetchPlayerCount, 60000); // Update every minute
   </script>
 
 </body>
