@@ -1,64 +1,124 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Roblox Game Tracker</title>
+  <title>Steal a Brainrot Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    :root {
+      --bg: #f0f2f5;
+      --card: #fff;
+      --text: #333;
+    }
+    body.dark {
+      --bg: #1e1e1e;
+      --card: #2c2c2c;
+      --text: #f0f0f0;
+    }
     body {
-      font-family: Arial, sans-serif;
-      background: #f4f6f8;
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg);
       margin: 0;
       padding: 20px;
       text-align: center;
+      transition: background 0.3s;
     }
-    header {
-      margin-bottom: 30px;
+    .toggle {
+      margin-bottom: 20px;
     }
-    .game-card {
-      background: #fff;
+    .card {
+      background: var(--card);
+      color: var(--text);
       border-radius: 12px;
-      padding: 20px;
+      padding: 16px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      display: inline-block;
-      margin-bottom: 40px;
+      max-width: 400px;
+      margin: 20px auto;
+      transition: background 0.3s, color 0.3s;
     }
-    .game-card img {
-      width: 120px;
+    .card img {
+      width: 80px;
       border-radius: 10px;
+    }
+    .title {
+      font-size: 1.2em;
+      margin: 10px 0;
+    }
+    .count {
+      font-size: 1em;
+      margin-top: 8px;
+    }
+    button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 8px;
+      background: #0078d4;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>📊 Live Tracker: Steal a Brainrot</h1>
-    <p>Real-time player count and activity chart</p>
-  </header>
-
-  <div class="game-card">
-    <img src="https://tr.rbxcdn.com/9f9e1e4b9e6e6e6e6e6e6e6e6e6e6e6e/150/150/GameIcon/Png" alt="Game Icon">
-    <h2>Steal a Brainrot</h2>
-    <p id="player-count">Loading player count...</p>
+  <div class="toggle">
+    <button onclick="toggleDarkMode()">🌙 Chuyển chế độ</button>
   </div>
 
-  <script>
-    const universeId = 5377600611;
+  <div id="tracker"></div>
 
-    async function fetchPlayerCount() {
+  <script>
+    const placeList = [
+      { id: 109983668079237, name: "Main Server" },
+      { id: 96342491571673, name: "New Player Server" },
+      { id: 109983668079238, name: "Event Server" } // Thêm placeId khác nếu có
+    ];
+
+    function createCard(place, countText = "Đang tải...") {
+      return `
+        <div class="card" id="card-${place.id}">
+          <img src="https://tr.rbxcdn.com/9f9e1e4b9e6e6e6e6e6e6e6e6e6e6e6e/150/150/GameIcon/Png" alt="Game Icon">
+          <div class="title">${place.name}</div>
+          <div class="count">${countText}</div>
+        </div>
+      `;
+    }
+
+    function renderCards() {
+      const container = document.getElementById("tracker");
+      container.innerHTML = placeList.map(p => createCard(p)).join("");
+    }
+
+    async function updateCounts() {
+      const ids = placeList.map(p => p.id).join(",");
       try {
-        // Gây lỗi cố tình: sai URL
-        const res = await fetch(`https://games.roblox.com/v1/games?universeId=${universeId}`); // sai key: universeId → universeIds
+        const res = await fetch(`https://games.roblox.com/v1/games?placeIds=${ids}`);
         const data = await res.json();
-        const count = data.data[0].playing;
-        document.getElementById("player-count").textContent = `${count.toLocaleString()} players online`;
-      } catch (error) {
-        // Lỗi sẽ luôn xảy ra
-        document.getElementById("player-count").textContent = "⚠️ Failed to load player count.";
-        console.error("Intentional error:", error);
+        data.data.forEach(item => {
+          const card = document.getElementById(`card-${item.placeId}`);
+          if (card) {
+            const count = item.playing.toLocaleString();
+            card.querySelector(".count").textContent = `${count} người đang chơi`;
+          }
+        });
+      } catch (err) {
+        placeList.forEach(p => {
+          const card = document.getElementById(`card-${p.id}`);
+          if (card) {
+            card.querySelector(".count").textContent = "Không thể tải dữ liệu 😢";
+          }
+        });
+        console.error("Lỗi khi lấy dữ liệu:", err);
       }
     }
 
-    fetchPlayerCount();
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark");
+    }
+
+    renderCards();
+    updateCounts();
+    setInterval(updateCounts, 30000); // Cập nhật mỗi 30 giây
   </script>
 
 </body>
