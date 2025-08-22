@@ -43,39 +43,31 @@
   <div class="card" id="info">Đang tải dữ liệu...</div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const placeId = 109983668079237;
-      const THUMB = "https://tr.rbxcdn.com/180DAY-e4f5ae4a5d3f7bf1887e91a88b36931b/768/432/Image/Webp/noFilter";
+    const placeId = 109983668079237;
+    const THUMB = "https://tr.rbxcdn.com/180DAY-e4f5ae4a5d3f7bf1887e91a88b36931b/768/432/Image/Webp/noFilter";
 
-      function updateGameData() {
-        const API = "https://tiny-recipe-ed80.triexemo.workers.dev/" + placeId + "?t=" + Date.now();
+    function updateGameData() {
+      const API = "https://tiny-recipe-ed80.triexemo.workers.dev/" + placeId + "?t=" + Date.now();
 
-        fetch(API)
-          .then(res => res.json())
-          .then(res => {
-            const game = res.data[0];
-            if (!game) return;
+      fetch(API)
+        .then(res => res.json())
+        .then(res => {
+          const game = res.data[0];
+          if(!game) return;
 
-            document.getElementById("info").innerHTML = `
-              <img src="${THUMB}" alt="Game Logo">
-              <h2>${game.name}</h2>
-              <p>👥 Playing: ${game.playing.toLocaleString()}</p>
-              <p>🌍 Visit: ${game.visits.toLocaleString()}</p>
-              <p>⭐ Favorite: ${game.favoritedCount.toLocaleString()}</p>
-            `;
-          })
-          .catch(err => {
-            document.getElementById("info").innerText = "Không lấy được dữ liệu";
-            console.error(err);
-          });
-      }
+          document.getElementById("info").innerHTML = `
+            <img src="${THUMB}" alt="Game Logo">
+            <h2>${game.name}</h2>
+            <p>👥 Playing: ${game.playing.toLocaleString()}</p>
+            <p>🌍 Visit: ${game.visits.toLocaleString()}</p>
+            <p>⭐ Favorite: ${game.favoritedCount.toLocaleString()}</p>
+          `;
+        })
+        .catch(err => console.error(err));
+    }
 
-      // Gọi lần đầu
-      updateGameData();
-
-      // Tự động cập nhật mỗi 5–10 giây
-      setInterval(updateGameData, 5000 + Math.random() * 5000);
-    });
+    updateGameData();
+    setInterval(updateGameData, 5000 + Math.random()*5000);
   </script>
 </body>
 </html>
