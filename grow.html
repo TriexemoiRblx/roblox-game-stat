@@ -1,113 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>⚔️ ADMIN WAR Event</title>
-  <style>
-    body {
-      background: #f9f9f9;
-      margin: 0;
-      padding: 20px;
-      font-family: 'Segoe UI', sans-serif;
-    }
-    .container {
-      max-width: 480px;
-      margin: auto;
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      padding: 20px;
-      text-align: center;
-    }
-    .lang-buttons {
-      text-align: right;
-      margin-bottom: 10px;
-    }
-    .lang-buttons button {
-      margin-left: 5px;
-      cursor: pointer;
-    }
-    #eventButton {
-      background-color: #ff4757;
-      color: white;
-      padding: 12px 20px;
-      font-size: 16px;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="lang-buttons">
-      <button onclick="setLang('en')">🇺🇸</button>
-      <button onclick="setLang('vi')">🇻🇳</button>
-      <button onclick="setLang('fr')">🇫🇷</button>
-      <button onclick="setLang('jp')">🇯🇵</button>
-      <button onclick="setLang('kr')">🇰🇷</button>
-    </div>
+<script>
+  const eventUTC = new Date(Date.UTC(2025, 7, 23, 2, 0, 0)); // 2:00 PM NZST
+  const eventLink = "https://www.roblox.com/events/1412207234460156417";
 
-    <img src="https://tr.rbxcdn.com/180DAY-6560206fd96c3f9b56725fb116db4d5a/768/432/Image/Webp/noFilter" alt="Admin War Event" style="width: 100%; border-radius: 12px; margin-bottom: 15px;">
-    <h2 id="title">⚔️ ADMIN WAR ⚔️</h2>
-    <p id="subtitle" style="font-weight: bold; font-size: 16px; color: #444;"></p>
-    <p id="description" style="font-size: 15px; color: #555; line-height: 1.5;"></p>
-    <p id="localTime" style="font-size: 14px; color: #888;"></p>
-    <p id="countdown" style="font-size: 16px; color: #555;"></p>
-    <button id="eventButton">🔔 Follow Event</button>
-  </div>
+  const title = document.getElementById("title");
+  const subtitle = document.getElementById("subtitle");
+  const description = document.getElementById("description");
+  const localTime = document.getElementById("localTime");
+  const countdown = document.getElementById("countdown");
+  const button = document.getElementById("eventButton");
 
-  <script>
-    const eventUTC = new Date(Date.UTC(2025, 7, 23, 2, 0, 0)); // 2:00 PM NZST
-    const eventLink = "https://www.roblox.com/events/1412207234460156417";
+  let currentLang = "en";
 
-    const title = document.getElementById("title");
-    const subtitle = document.getElementById("subtitle");
-    const description = document.getElementById("description");
-    const localTime = document.getElementById("localTime");
-    const countdown = document.getElementById("countdown");
-    const button = document.getElementById("eventButton");
+  function formatLocalTime(date) {
+    return date.toLocaleString(currentLang === "vi" ? "vi-VN" : currentLang + "-US", {
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZoneName: "short"
+    });
+  }
 
-    const translations = {
-      en: {
-        title: "⚔️ ADMIN WAR ⚔️",
-        subtitle: "Admin War + Beanstalk Pt. 2",
-        description: `<strong>ADMIN ABUSE WAR!</strong><br><br>Be in game dressed as a green bean on <strong>${formatLocalTime(eventUTC)}</strong> to not miss out on insane admin abuse with epic weathers, rewards, mutations, and more... 🫛🫛🫛<br><br>Afterwards, the update brings an expansion of the beanstalk event with more obstacles and greater rewards.<br><br><strong>Follow the event so you don't miss out ⚔️🌱🫛</strong>`,
-        buttonBefore: "🔔 Follow Event",
-        buttonAfter: "✅ Join Event",
-        alert: "The event hasn't started yet. Come back at your local time!",
-        timeLabel: "📅 Local time for the event:"
-      },
-      vi: {
-        title: "⚔️ CUỘC CHIẾN ADMIN ⚔️",
-        subtitle: "Cuộc chiến Admin + Cây đậu Pt. 2",
-        description: `<strong>CUỘC CHIẾN LẠM QUYỀN!</strong><br><br>Vào game với trang phục hạt đậu xanh vào <strong>${formatLocalTime(eventUTC)}</strong> để không bỏ lỡ màn lạm quyền điên cuồng cùng thời tiết kỳ lạ, phần thưởng, đột biến và nhiều hơn nữa... 🫛🫛🫛<br><br>Sau đó, bản cập nhật mở rộng sự kiện cây đậu với nhiều chướng ngại và phần thưởng hấp dẫn hơn.<br><br><strong>Theo dõi sự kiện để không bỏ lỡ ⚔️🌱🫛</strong>`,
-        buttonBefore: "🔔 Theo dõi sự kiện",
-        buttonAfter: "✅ Tham gia sự kiện",
-        alert: "Sự kiện chưa bắt đầu. Quay lại đúng giờ địa phương nhé!",
-        timeLabel: "📅 Thời gian địa phương của sự kiện:"
-      },
-      fr: {
-        title: "⚔️ GUERRE DES ADMINS ⚔️",
-        subtitle: "Guerre des Admins + Haricot Pt. 2",
-        description: `<strong>GUERRE D'ABUS ADMIN !</strong><br><br>Rejoignez le jeu en tant que haricot vert le <strong>${formatLocalTime(eventUTC)}</strong> pour vivre des abus d'admin fous, météo épique, récompenses, mutations et plus... 🫛🫛🫛<br><br>Ensuite, une mise à jour étend l'événement avec plus d'obstacles et de récompenses.<br><br><strong>Suivez l'événement pour ne rien manquer ⚔️🌱🫛</strong>`,
-        buttonBefore: "🔔 Suivre l'événement",
-        buttonAfter: "✅ Rejoindre l'événement",
-        alert: "L'événement n'a pas encore commencé. Revenez à l'heure locale !",
-        timeLabel: "📅 Heure locale de l'événement :"
-      },
-      jp: {
-        title: "⚔️ 管理者戦争 ⚔️",
-        subtitle: "管理者戦争 + 豆の木 Pt. 2",
-        description: `<strong>管理者の暴走戦争！</strong><br><br><strong>${formatLocalTime(eventUTC)}</strong> に緑の豆の姿でゲームに参加して、天候、報酬、突然変異などの壮絶な管理者イベントを見逃さないように！🫛🫛🫛<br><br>その後、アップデートで豆の木イベントが拡張され、障害物や報酬がさらに増加します。<br><br><strong>イベントをフォローして見逃さないように ⚔️🌱🫛</strong>`,
-        buttonBefore: "🔔 イベントをフォロー",
-        buttonAfter: "✅ イベントに参加",
-        alert: "イベントはまだ始まっていません。現地時間に戻ってきてください！",
-        timeLabel: "📅 イベントの現地時間："
-      },
-      kr: {
-        title: "⚔️ 관리자 전쟁 ⚔️",
-        subtitle: "관리자 전쟁 + 콩나무 Pt. 2",
-        description: `<strong>관리자 권한 남용 전쟁!</strong><br><br><strong>${formatLocalTime(eventUTC)}</strong> 에 녹색 콩 복장으로 게임에 참여하여 미친 관리자 이벤트, 날씨, 보상, 돌연변이를 놓치지 마세요! 🫛🫛🫛<br><br>이후 업데이트에서는 콩나무 이벤트가 확장되어 더 많은 장애물과 보상이 추가됩니다.[43dcd9a7-70db-4a1f-b0ae-981daa162054](https://github.com/lzh-yi/Web-Fork-/tree/024b3e55587afdf9f05a677613a75f24e3d1803e/03-CSS%E8%BF%9B%E9%98%B6%2F04-%E5%A6%82%E4%BD%95%E8%AE%A9%E4%B8%80%E4%B8%AA%E5%85%83%E7%B4%A0%E6%B0%B4%E5%B9%B3%E5%9E%82%E7%9B%B4%E5%B1%85%E4%B8%AD%EF%BC%9F.md?citationMarker=43dcd9a7-70db-4a1f-b0ae-981daa162054 "1")<br
+  function updateCountdown() {
+    const now = new Date();
+    const diff = eventUTC - now;
+
+    if (diff <= 0) {
+      countdown.textContent = translations[currentLang].buttonAfter;
+      button.textContent = translations[currentLang].buttonAfter;
+      button.onclick = () => window.open(eventLink, "_blank");
+    } else {
+      const hours = Math.floor(diff / 1000 / 60 / 60);
+      const minutes = Math.floor((diff / 1000 / 60) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+      countdown.textContent = `⏳ ${hours}h ${minutes}m ${seconds}s`;
+      button.textContent = translations[currentLang].buttonBefore;
+      button.onclick = () => alert(translations[currentLang].alert);
+    }
+  }
+
+  function setLang(lang) {
+    currentLang = lang;
+    title.textContent = translations[lang].title;
+    subtitle.textContent = translations[lang].subtitle;
+    description.innerHTML = translations[lang].description;
+    localTime.innerHTML = `${translations[lang].timeLabel} <strong>${formatLocalTime(eventUTC)}</strong>`;
+    updateCountdown();
+  }
+
+  setLang(currentLang);
+  setInterval(updateCountdown, 1000);
+</script>
