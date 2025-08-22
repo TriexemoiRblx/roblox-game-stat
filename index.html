@@ -21,8 +21,7 @@
   <script>
     const placeId = 109983668079237;
     const API = "https://tiny-recipe-ed80.triexemo.workers.dev/" + placeId;
-    const THUMB = `https://thumbnails.roblox.com/v1/places/gameicons?placeIds=${placeId}&returnPolicy=PlaceHolder&size=512x512&format=Png&isCircular=false`;
-
+    const THUMB = `https://thumbnails.roblox.com/v1/games/icons?universeIds=${game.universeId}&size=512x512&format=Png`;
     fetch(API)
       .then(res => res.json())
       .then(res => {
