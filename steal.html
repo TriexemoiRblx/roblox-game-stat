@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>⚔️ ADMIN WAR Event</title>
+  <style>
+    body {
+      background: #f8f9fa;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 40px;
+    }
+    .event-box {
+      max-width: 500px;
+      margin: auto;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+      padding: 24px;
+      text-align: center;
+    }
+    .event-box img {
+      width: 100%;
+      border-radius: 12px;
+      margin-bottom: 16px;
+    }
+    .event-box h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+      color: #222;
+    }
+    .event-box p {
+      font-size: 16px;
+      color: #555;
+      margin-bottom: 12px;
+    }
+    .event-time {
+      font-size: 15px;
+      color: #888;
+      margin-bottom: 20px;
+    }
+    .event-box button {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .join-event {
+      background-color: #ff6b81;
+      color: white;
+    }
+    .join-event:hover {
+      background-color: #e5506e;
+    }
+    .play-game {
+      background-color: #1e90ff;
+      color: white;
+    }
+    .play-game:hover {
+      background-color: #187bcd;
+    }
+  </style>
+</head>
+<body>
+  <div class="event-box">
+    <img src="https://tr.rbxcdn.com/180DAY-e936bee550fc7a75a0f8ddc8c5c31a18/768/432/Image/Webp/noFilter" alt="ADMIN WAR Event">
+    <h1>⚔️ ADMIN WAR ⚔️</h1>
+    <p><strong>Galaxy Mutation + WAR</strong></p>
+    <p>Admins descend. Galaxies mutate. WAR erupts. Only the bold survive this cosmic clash. 🌌🔥</p>
+    <div class="event-time" id="localTime"></div>
+    <button class="join-event" onclick="window.open('https://www.roblox.com/events/7300321812015743467', '_blank')">
+      🚀 Join Event
+    </button>
+    <button class="play-game" onclick="window.open('https://www.roblox.com/games/109983668079237/Steal-a-Brainrot', '_blank')">
+      🎮 Play Game
+    </button>
+  </div>
+
+  <script>
+    // Grow a Garden time: August 23, 2025 at 2:00 PM NZST (UTC+12)
+    const eventUTC = new Date(Date.UTC(2025, 7, 23, 2, 0, 0));
+    const localTime = document.getElementById("localTime");
+
+    function formatLocalTime(date) {
+      return date.toLocaleString(undefined, {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        timeZoneName: 'short'
+      });
+    }
+
+    localTime.innerHTML = `📅 Local time: <strong>${formatLocalTime(eventUTC)}</strong>`;
+  </script>
+</body>
+</html>
