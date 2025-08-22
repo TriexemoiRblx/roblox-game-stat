@@ -44,10 +44,11 @@
   <div class="stat" id="playerCount">Players online: ...</div>
   <div class="stat" id="visits">Total visits: ...</div>
   <div class="stat" id="favorites">Favorites: ...</div>
+  <div class="stat" id="likes">Likes: ...</div>
   <div class="error" id="errorMessage"></div>
 
   <script>
-    const placeId = 109983668079237;
+    const placeId = 109983668079237; // Steal a Brainrot
     const maxRetries = 10;
     let attempt = 0;
 
@@ -59,11 +60,20 @@
         })
         .then(data => {
           const game = data.data[0];
+
+          // Lấy dữ liệu chính
+          const playing = game.playing || 0;
+          const visits = game.visits || 0;
+          const favorites = game.favoritedCount || 0;
+          const likes = game.upVotes || 0;
+
+          // Cập nhật UI
           document.getElementById("gameTitle").innerText = game.name || "Unnamed game";
-          document.getElementById("playerCount").innerText = `Players online: ${game.playing.toLocaleString()}`;
-          document.getElementById("visits").innerText = `Total visits: ${game.visits.toLocaleString()}`;
-          document.getElementById("favorites").innerText = `Favorites: ${game.favoritedCount.toLocaleString()}`;
-          document.getElementById("errorMessage").innerText = ""; // Clear error
+          document.getElementById("playerCount").innerText = `Players online: ${playing.toLocaleString()}`;
+          document.getElementById("visits").innerText = `Total visits: ${visits.toLocaleString()}`;
+          document.getElementById("favorites").innerText = `Favorites: ${favorites.toLocaleString()}`;
+          document.getElementById("likes").innerText = `Likes: ${likes.toLocaleString()}`;
+          document.getElementById("errorMessage").innerText = "";
         })
         .catch(error => {
           attempt++;
@@ -72,9 +82,6 @@
             setTimeout(fetchGameData, 5000);
           } else {
             document.getElementById("gameTitle").innerText = "Unable to load game info";
-            document.getElementById("playerCount").innerText = "";
-            document.getElementById("visits").innerText = "";
-            document.getElementById("favorites").innerText = "";
           }
         });
     }
