@@ -6,12 +6,13 @@
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background-color: #f0f0f0;
+      background-color: #f9f9f9;
       padding: 20px;
-      max-width: 400px;
+      max-width: 420px;
       margin: auto;
       border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
     }
     .logo {
       width: 100%;
@@ -19,39 +20,51 @@
       margin-bottom: 15px;
     }
     .title {
-      font-size: 22px;
+      font-size: 24px;
       font-weight: bold;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
+      color: #333;
     }
     .stat {
       font-size: 16px;
       margin: 6px 0;
+      color: #555;
+    }
+    .error {
+      color: red;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
 
   <img class="logo" src="https://tr.rbxcdn.com/180DAY-e4f5ae4a5d3f7bf1887e91a88b36931b/768/432/Image/Webp/noFilter" alt="Game Logo">
-  <div class="title" id="gameTitle">Loading...</div>
+  <div class="title" id="gameTitle">Loading game info...</div>
   <div class="stat" id="playerCount">Players Online: ...</div>
   <div class="stat" id="visits">Total Visits: ...</div>
   <div class="stat" id="favorites">Favorites: ...</div>
 
   <script>
-    const placeId = 109983668079237;
+    const placeId = 7709344486;
 
     fetch(`https://games.roblox.com/v1/games?placeIds=${placeId}`)
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) throw new Error("Unable to fetch data from Roblox API");
+        return response.json();
+      })
       .then(data => {
         const game = data.data[0];
-        document.getElementById("gameTitle").innerText = game.name;
+        document.getElementById("gameTitle").innerText = game.name || "No game name found";
         document.getElementById("playerCount").innerText = `Players Online: ${game.playing.toLocaleString()}`;
         document.getElementById("visits").innerText = `Total Visits: ${game.visits.toLocaleString()}`;
         document.getElementById("favorites").innerText = `Favorites: ${game.favoritedCount.toLocaleString()}`;
       })
       .catch(error => {
-        console.error("Failed to fetch game data:", error);
+        console.error("Error:", error);
         document.getElementById("gameTitle").innerText = "Unable to load game info";
+        document.getElementById("playerCount").innerText = "";
+        document.getElementById("visits").innerText = "";
+        document.getElementById("favorites").innerText = "";
       });
   </script>
 
