@@ -5,39 +5,77 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Steal a Brainrot</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #f4f4f9; margin: 0; padding: 20px; }
-    .card {
-      background: #fff; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-      max-width: 400px; margin: auto; padding: 20px; text-align: center;
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f9;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
-    img { width: 100%; border-radius: 12px; }
-    h2 { margin: 15px 0 5px; font-size: 20px; }
-    p { margin: 8px 0; font-size: 16px; }
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      max-width: 400px;
+      width: 100%;
+      padding: 20px;
+      text-align: center;
+    }
+    img {
+      width: 100%;
+      border-radius: 12px;
+      margin-bottom: 10px;
+    }
+    h2 {
+      margin: 15px 0 5px;
+      font-size: 22px;
+    }
+    p {
+      margin: 8px 0;
+      font-size: 16px;
+    }
   </style>
 </head>
 <body>
   <div class="card" id="info">Đang tải dữ liệu...</div>
 
   <script>
-    const placeId = 109983668079237;
-    const API = "https://tiny-recipe-ed80.triexemo.workers.dev/" + placeId;
-    const THUMB = "https://tr.rbxcdn.com/180DAY-e4f5ae4a5d3f7bf1887e91a88b36931b/768/432/Image/Webp/noFilter";`;
-    fetch(API)
-      .then(res => res.json())
-      .then(res => {
-        const game = res.data[0]; // lấy game từ JSON
-        document.getElementById("info").innerHTML = `
-          <img src="${THUMB}" alt="Game Logo">
-          <h2>${game.name}</h2>
-          <p>👥 Playing: ${game.playing.toLocaleString()}</p>
-          <p>🌍 Visit: ${game.visits.toLocaleString()}</p>
-          <p>⭐ Favorite: ${game.favoritedCount.toLocaleString()}</p>
-        `;
-      })
-      .catch(err => {
-        document.getElementById("info").innerText = "Không lấy được dữ liệu";
-        console.error(err);
-      });
+    document.addEventListener("DOMContentLoaded", () => {
+      const placeId = 109983668079237;
+      const THUMB = "https://tr.rbxcdn.com/180DAY-e4f5ae4a5d3f7bf1887e91a88b36931b/768/432/Image/Webp/noFilter";
+
+      function updateGameData() {
+        const API = "https://tiny-recipe-ed80.triexemo.workers.dev/" + placeId + "?t=" + Date.now();
+
+        fetch(API)
+          .then(res => res.json())
+          .then(res => {
+            const game = res.data[0];
+            if (!game) return;
+
+            document.getElementById("info").innerHTML = `
+              <img src="${THUMB}" alt="Game Logo">
+              <h2>${game.name}</h2>
+              <p>👥 Playing: ${game.playing.toLocaleString()}</p>
+              <p>🌍 Visit: ${game.visits.toLocaleString()}</p>
+              <p>⭐ Favorite: ${game.favoritedCount.toLocaleString()}</p>
+            `;
+          })
+          .catch(err => {
+            document.getElementById("info").innerText = "Không lấy được dữ liệu";
+            console.error(err);
+          });
+      }
+
+      // Gọi lần đầu
+      updateGameData();
+
+      // Tự động cập nhật mỗi 5–10 giây
+      setInterval(updateGameData, 5000 + Math.random() * 5000);
+    });
   </script>
 </body>
 </html>
