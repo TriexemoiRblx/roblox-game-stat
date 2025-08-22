@@ -2,92 +2,82 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Steal a Brainrot - Game Stats</title>
+  <title>Steal a Brainrot - Stats</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f9f9f9;
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      color: #333;
+      text-align: center;
       padding: 20px;
-      max-width: 420px;
+    }
+    .container {
+      background: white;
+      max-width: 500px;
       margin: auto;
+      padding: 20px;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      text-align: center;
     }
-    .logo {
+    img {
       width: 100%;
       border-radius: 12px;
-      margin-bottom: 15px;
-    }
-    .title {
-      font-size: 24px;
-      font-weight: bold;
       margin-bottom: 12px;
-      color: #333;
     }
-    .stat {
+    h1 {
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+    p {
       font-size: 16px;
       margin: 6px 0;
-      color: #555;
     }
     .error {
       color: red;
-      font-weight: bold;
       margin-top: 10px;
     }
   </style>
 </head>
 <body>
-
-  <img class="logo" src="https://tr.rbxcdn.com/180DAY-e4f5ae4a5d3f7bf1887e91a88b36931b/768/432/Image/Webp/noFilter" alt="Game Logo">
-  <div class="title" id="gameTitle">Loading game info...</div>
-  <div class="stat" id="playerCount">Players online: ...</div>
-  <div class="stat" id="visits">Total visits: ...</div>
-  <div class="stat" id="favorites">Favorites: ...</div>
-  <div class="stat" id="likes">Likes: ...</div>
-  <div class="error" id="errorMessage"></div>
+  <div class="container">
+    <img id="gameIcon" src="" alt="Game Thumbnail">
+    <h1 id="gameTitle">Loading...</h1>
+    <p id="playing">Players Online: ...</p>
+    <p id="visits">Total Visits: ...</p>
+    <p id="favorites">Favorites (Likes): ...</p>
+    <div class="error" id="errorMessage"></div>
+  </div>
 
   <script>
     const placeId = 109983668079237; // Steal a Brainrot
-    const maxRetries = 10;
-    let attempt = 0;
+    const gameApi = `https://games.roblox.com/v1/games?placeIds=${placeId}`;
+    const iconApi = `https://thumbnails.roblox.com/v1/places/gameicons?placeIds=${placeId}&size=256x256&format=Png&isCircular=false`;
 
-    function fetchGameData() {
-      fetch(`https://games.roblox.com/v1/games?placeIds=${placeId}`)
-        .then(response => {
-          if (!response.ok) throw new Error("Failed to fetch data from Roblox API");
-          return response.json();
-        })
-        .then(data => {
-          const game = data.data[0];
+    async function fetchStats() {
+      try {
+        // Lấy thông tin game
+        const res = await fetch(gameApi);
+        if (!res.ok) throw new Error("Failed to fetch game data");
+        const json = await res.json();
+        const game = json.data[0];
 
-          // Lấy dữ liệu chính
-          const playing = game.playing || 0;
-          const visits = game.visits || 0;
-          const favorites = game.favoritedCount || 0;
-          const likes = game.upVotes || 0;
+        document.getElementById("gameTitle").innerText = game.name;
+        document.getElementById("playing").innerText = `Players Online: ${game.playing.toLocaleString()}`;
+        document.getElementById("visits").innerText = `Total Visits: ${game.visits.toLocaleString()}`;
+        document.getElementById("favorites").innerText = `Favorites (Likes): ${game.favoritedCount.toLocaleString()}`;
 
-          // Cập nhật UI
-          document.getElementById("gameTitle").innerText = game.name || "Unnamed game";
-          document.getElementById("playerCount").innerText = `Players online: ${playing.toLocaleString()}`;
-          document.getElementById("visits").innerText = `Total visits: ${visits.toLocaleString()}`;
-          document.getElementById("favorites").innerText = `Favorites: ${favorites.toLocaleString()}`;
-          document.getElementById("likes").innerText = `Likes: ${likes.toLocaleString()}`;
-          document.getElementById("errorMessage").innerText = "";
-        })
-        .catch(error => {
-          attempt++;
-          document.getElementById("errorMessage").innerText = `⚠️ Error loading data (attempt ${attempt})`;
-          if (attempt < maxRetries) {
-            setTimeout(fetchGameData, 5000);
-          } else {
-            document.getElementById("gameTitle").innerText = "Unable to load game info";
-          }
-        });
+        // Lấy ảnh icon game
+        const iconRes = await fetch(iconApi);
+        const iconJson = await iconRes.json();
+        document.getElementById("gameIcon").src = iconJson.data[0].imageUrl;
+
+      } catch (err) {
+        document.getElementById("errorMessage").innerText = "⚠️ Error loading data, please try again.";
+        console.error(err);
+      }
     }
 
-    fetchGameData();
+    fetchStats();
   </script>
-
 </body>
 </html>
