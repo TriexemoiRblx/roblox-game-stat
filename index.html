@@ -2,82 +2,50 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Steal a Brainrot - Stats</title>
+  <title>Roblox Game Stats</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #f2f2f2;
-      color: #333;
+      font-family: 'Segoe UI', sans-serif;
       text-align: center;
       padding: 20px;
-    }
-    .container {
-      background: white;
-      max-width: 500px;
-      margin: auto;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      background: #f5f5f5;
     }
     img {
-      width: 100%;
-      border-radius: 12px;
-      margin-bottom: 12px;
+      border-radius: 16px;
+      width: 250px;
+      margin: 15px 0;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
-    h1 {
-      font-size: 22px;
-      margin-bottom: 10px;
-    }
-    p {
-      font-size: 16px;
-      margin: 6px 0;
-    }
-    .error {
-      color: red;
-      margin-top: 10px;
+    .stat {
+      font-size: 18px;
+      margin: 8px 0;
+      color: #333;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <img id="gameIcon" src="" alt="Game Thumbnail">
-    <h1 id="gameTitle">Loading...</h1>
-    <p id="playing">Players Online: ...</p>
-    <p id="visits">Total Visits: ...</p>
-    <p id="favorites">Favorites (Likes): ...</p>
-    <div class="error" id="errorMessage"></div>
-  </div>
+  <h1 id="gameName">Loading...</h1>
+  <img id="thumbnail" alt="Game Thumbnail">
+  <div class="stat" id="playerCount"></div>
+  <div class="stat" id="visits"></div>
+  <div class="stat" id="favorites"></div>
 
   <script>
-    const placeId = 109983668079237; // Steal a Brainrot
-    const gameApi = `https://games.roblox.com/v1/games?placeIds=${placeId}`;
-    const iconApi = `https://thumbnails.roblox.com/v1/places/gameicons?placeIds=${placeId}&size=256x256&format=Png&isCircular=false`;
+    const apiUrl = "https://shiny-resonance-7d8d.triexemo.workers.dev/?placeId=109983668079237";
 
-    async function fetchStats() {
-      try {
-        // Lấy thông tin game
-        const res = await fetch(gameApi);
-        if (!res.ok) throw new Error("Failed to fetch game data");
-        const json = await res.json();
-        const game = json.data[0];
-
-        document.getElementById("gameTitle").innerText = game.name;
-        document.getElementById("playing").innerText = `Players Online: ${game.playing.toLocaleString()}`;
-        document.getElementById("visits").innerText = `Total Visits: ${game.visits.toLocaleString()}`;
-        document.getElementById("favorites").innerText = `Favorites (Likes): ${game.favoritedCount.toLocaleString()}`;
-
-        // Lấy ảnh icon game
-        const iconRes = await fetch(iconApi);
-        const iconJson = await iconRes.json();
-        document.getElementById("gameIcon").src = iconJson.data[0].imageUrl;
-
-      } catch (err) {
-        document.getElementById("errorMessage").innerText = "⚠️ Error loading data, please try again.";
+    fetch(apiUrl)
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("thumbnail").src = data.thumbnail;
+        document.getElementById("gameName").innerText = data.name;
+        document.getElementById("playerCount").innerText = `Players Online: ${data.playing.toLocaleString()}`;
+        document.getElementById("visits").innerText = `Total Visits: ${data.visits.toLocaleString()}`;
+        document.getElementById("favorites").innerText = `Favorites: ${data.favorites.toLocaleString()}`;
+      })
+      .catch(err => {
+        document.getElementById("gameName").innerText = "⚠️ Error loading data";
         console.error(err);
-      }
-    }
-
-    fetchStats();
+      });
   </script>
 </body>
 </html>
